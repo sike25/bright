@@ -10,7 +10,6 @@ const playPauseBtn = document.getElementById('playPause');
 const gainControl = document.getElementById('gainControl');
 const promptInput = document.getElementById('promptInput');
 
-const apiKey = "c1c47773f336f44ae378375d5da79a7c";
 
 // Set up D3
 const svg = d3.select('#visualizer')
