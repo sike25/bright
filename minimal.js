@@ -68,6 +68,14 @@ async function generateSong(prompt) {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", apiKey);
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Access-Control-Allow-Origin', 'https://sike25.github.io/');
+    
+    // headers.append('Access-Control-Allow-Credentials', 'true');
+  
+    // headers.append('GET', 'POST', 'OPTIONS');
+  
+    // headers.append('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+  
 
     const raw = JSON.stringify({
         "custom_mode": false,
