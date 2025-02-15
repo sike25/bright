@@ -82,7 +82,8 @@ async function generateSong(prompt) {
         method: 'POST',
         headers: myHeaders,
         body: raw,
-        redirect: 'follow'
+        redirect: 'follow',
+        mode: 'no-cors'
     };
 
     try {
