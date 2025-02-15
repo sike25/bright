@@ -66,16 +66,8 @@ async function generateSong(prompt) {
     console.log("debug: building generation request to suno...");
 
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", apiKey);
+    myHeaders.append("Authorization", `Bearer ${apiKey}`);
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append('Access-Control-Allow-Origin', 'https://sike25.github.io/');
-    
-    // headers.append('Access-Control-Allow-Credentials', 'true');
-  
-    // headers.append('GET', 'POST', 'OPTIONS');
-  
-    // headers.append('Authorization', 'Basic ' + base64.encode(username + ":" + password));
-  
 
     const raw = JSON.stringify({
         "custom_mode": false,
@@ -94,7 +86,7 @@ async function generateSong(prompt) {
     };
 
     try {
-        const response = await fetch("https://api.musicapi.ai/api/v1/sonic/create", requestOptions);
+        const response = await fetch("https://cors-anywhere.herokuapp.com/https://api.musicapi.ai/api/v1/sonic/create", requestOptions);
         const result = await response.json();
 
         console.log("debug: generation result...", result);
