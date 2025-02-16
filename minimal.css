@@ -83,3 +83,28 @@ button:hover {
         opacity: 0;
     }
 }
+
+.prompt-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.preset-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.preset {
+    padding: 6px 12px;
+    border: 1px solid #666;
+    border-radius: 4px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset:hover {
+    background: #333;
+}

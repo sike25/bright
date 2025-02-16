@@ -32,6 +32,15 @@ document.getElementById('audioInput').onchange = function(e) {
     }
 }
 
+// Handle preset prompts
+document.querySelectorAll('.preset').forEach(button => {
+    button.addEventListener('click', () => {
+        const prompt = button.dataset.prompt;
+        promptInput.value = prompt;
+        document.getElementById('generateButton').click();
+    });
+});
+
 // Handle text prompt input
 document.getElementById('generateButton').onclick = async function() {
     const prompt = promptInput.value.trim();
@@ -40,19 +49,19 @@ document.getElementById('generateButton').onclick = async function() {
 
         // demo 01
         if (prompt.includes("nostalgia" )) {
-            audio.src = "summer_youth_nostalgia.mp3";
+            audio.src = "assets/summer_youth_nostalgia.mp3";
             initAudio();
         }
 
         // demo 02
         else if (prompt.includes("afro")) {
-            audio.src = "afrobeats_chill.mp3";
+            audio.src = "assets/afrobeats_chill.mp3";
             initAudio();
         } 
         
         // demo 03
         else if (prompt.includes("fast")) {
-            audio.src = "edm_fast.mp3";
+            audio.src = "assets/edm_fast.mp3";
             initAudio();
         }
 
