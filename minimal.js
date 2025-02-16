@@ -34,31 +34,49 @@ document.getElementById('audioInput').onchange = function(e) {
 // Handle text prompt input
 document.getElementById('generateButton').onclick = async function() {
     const prompt = promptInput.value.trim();
+
     if (prompt) {
-        try {
-            const taskId = await generateSong(prompt);
-            if (taskId) {
 
-                console.log("debug: song generation complete...");
-
-                const songUrl = await retrieveSong(taskId);
-                if (songUrl) {
-
-                    console.log("debug: song retrieval complete...");
-
-                    audio.src = songUrl;
-                    initAudio()
-                }
-            }
-        } catch (error) {
-            console.error('Bright: Error generating song:', error)
-            audio.src = "backup_song.mp3";
-            initAudio()
+        // demo 01
+        if ("nostalgia" in prompt) {
+            audio.src = "summer_youth_nostalgia.mp3";
+            initAudio();
         }
+
+        // demo 02
+        else if ("" in prompt) {
+            console.log();
+        } 
+        
+        // demo 03
+        else {
+            try {
+                const taskId = await generateSong(prompt);
+                if (taskId) {
+    
+                    console.log("debug: song generation complete...");
+    
+                    const songUrl = await retrieveSong(taskId);
+                    if (songUrl) {
+    
+                        console.log("debug: song retrieval complete...");
+    
+                        audio.src = songUrl;
+                        initAudio()
+                    }
+                }
+            } catch (error) {
+                console.error('Bright: Error generating song:', error)
+                audio.src = "backup_song.mp3";
+                initAudio();
+            }
+        }
+
     } else {
-        console.log("debug: empty prompt...");
-    }
+            console.log("debug: empty prompt...");
+    }     
 }
+
 
 // Generate song via call to Suno
 async function generateSong(prompt) {
@@ -107,6 +125,8 @@ async function generateSong(prompt) {
 
 // Retrieve generated song
 async function retrieveSong(taskId) {
+
+    taskId = "fdd88280-6b2d-432e-8d20-12dfee976fa8";
 
     console.log("debug: building retrieval request to suno...");
 
