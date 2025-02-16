@@ -264,7 +264,8 @@ function visualize() {
     const baseBlue = Math.floor(Math.random() * 156);
     
     // Calculate bar width based on window size and number of bars
-    const barWidth = window.innerWidth / dataArray.length;
+    const centerX = window.innerWidth / 2;
+    const barWidth = (centerX / dataArray.length);
 
     // If a beat is detected, make bars taller
     let heightMultiplier = 1;
