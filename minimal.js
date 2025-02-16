@@ -215,7 +215,7 @@ function initAudio() {
         analyser.connect(audioContext.destination);
         
         // Set up analyser
-        analyser.fftSize = 800;
+        analyser.fftSize = 300;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
 
