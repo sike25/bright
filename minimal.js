@@ -55,7 +55,7 @@ document.getElementById('generateButton').onclick = async function() {
 
     setTimeout(() => {
         console.log("9 seconds have passed!");
-    }, 9000);
+    }, 90000);
 
     if (prompt) {
 
@@ -223,7 +223,7 @@ function initAudio() {
         analyser.connect(audioContext.destination);
         
         // Set up analyser
-        analyser.fftSize = 512;
+        analyser.fftSize = 256;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
 
@@ -259,9 +259,9 @@ function visualize() {
     analyser.getByteFrequencyData(dataArray);
 
     // Random base colors
-    const baseRed = Math.floor(Math.random() * 256);
-    const baseGreen = Math.floor(Math.random() * 256);
-    const baseBlue = Math.floor(Math.random() * 256);
+    const baseRed = Math.floor(Math.random() * 156);
+    const baseGreen = Math.floor(Math.random() * 156);
+    const baseBlue = Math.floor(Math.random() * 156);
     
     // Calculate bar width based on window size and number of bars
     const barWidth = window.innerWidth / dataArray.length;
@@ -275,13 +275,18 @@ function visualize() {
     
     // Update visualization
     const bars = svg.selectAll('rect')
-        .data(dataArray);
+        .data([...dataArray, ...dataArray.reverse()]);
     
     // Enter new bars
     bars.enter()
         .append('rect')
         .merge(bars)
-        .attr('x', (d, i) => i * barWidth)
+        .attr('x', (d, i) => {
+            if (i < dataArray.length) {
+                return centerX - (i * barWidth) - barWidth;
+            } else {
+                return centerX + ((i - dataArray.length) * barWidth);
+            }})
         .attr('y', d => (window.innerHeight - (d * 2)) * heightMultiplier)
         .attr('width', barWidth - 1)
         .attr('height', d => d * 2)
