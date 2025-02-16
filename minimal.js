@@ -10,6 +10,14 @@ const playPauseBtn = document.getElementById('playPause');
 const gainControl = document.getElementById('gainControl');
 const promptInput = document.getElementById('promptInput');
 
+
+// Initial beat variables
+let lastBeatTime = 0;
+const beatHoldTime = 100;
+const beatDecayRate = 0.97;
+const beatThreshold = 0.11; 
+
+
 // Set up D3
 const svg = d3.select('#visualizer')
     .append('svg')
@@ -46,8 +54,8 @@ document.getElementById('generateButton').onclick = async function() {
     const prompt = promptInput.value.trim();
 
     setTimeout(() => {
-        console.log("5 seconds have passed!");
-    }, 5000);
+        console.log("9 seconds have passed!");
+    }, 9000);
 
     if (prompt) {
 
@@ -215,7 +223,7 @@ function initAudio() {
         analyser.connect(audioContext.destination);
         
         // Set up analyser
-        analyser.fftSize = 300;
+        analyser.fftSize = 512;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
 
@@ -257,6 +265,13 @@ function visualize() {
     
     // Calculate bar width based on window size and number of bars
     const barWidth = window.innerWidth / dataArray.length;
+
+    // If a beat is detected, make bars taller
+    let heightMultiplier = 1;
+    const isBeat = detectBeats(dataArray);
+    if (isBeat) {
+        heightMultiplier = 1.2;
+    }
     
     // Update visualization
     const bars = svg.selectAll('rect')
@@ -267,7 +282,7 @@ function visualize() {
         .append('rect')
         .merge(bars)
         .attr('x', (d, i) => i * barWidth)
-        .attr('y', d => window.innerHeight - (d * 2))
+        .attr('y', d => (window.innerHeight - (d * 2)) * heightMultiplier)
         .attr('width', barWidth - 1)
         .attr('height', d => d * 2)
         .attr('fill', d => {
@@ -282,6 +297,40 @@ function visualize() {
     // Remove extra bars
     bars.exit().remove();
 }
+
+// Function for beat detection
+function detectBeats(){
+    // Create arrays for tracking beat energy
+    const beatCutOff = new Array(dataArray.length).fill(0);
+    const beatAverage = new Array(dataArray.length).fill(0);
+
+    let beatDetected = false;
+        
+        for (let i = 0; i < dataArray.length; i++) {
+            // Get frequency amplitude
+            const amplitude = dataArray[i] / 255;
+            
+            // Update running average for this frequency
+            beatAverage[i] = (beatAverage[i] * beatDecayRate) + (amplitude * (1 - beatDecayRate));
+            
+            // Update threshold for this frequency
+            beatCutOff[i] = (beatCutOff[i] * beatDecayRate) + (beatThreshold * (1 - beatDecayRate));
+            
+            // Check if amplitude exceeds threshold
+            if (amplitude > beatCutOff[i] && amplitude > beatThreshold) {
+                // Only trigger if enough time has passed since last beat
+                if (Date.now() - lastBeatTime > beatHoldTime) {
+                    beatCutOff[i] = amplitude;
+                    lastBeatTime = Date.now();
+                    beatDetected = true;
+                }
+            }
+        }
+        
+        return beatDetected;
+}
+
+
 
 // Notify user generated video is ready
 function showToast() {
