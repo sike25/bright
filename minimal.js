@@ -251,6 +251,75 @@ function visualize() {
     
     analyser.getByteFrequencyData(dataArray);
     
+    const barWidth = window.innerWidth / dataArray.length;
+    const maxHeight = window.innerHeight * 0.7; // Cap the height at 70% of window
+    
+    // Add average calculation for dynamic effects
+    const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+    
+    // Update visualization with enhanced effects
+    const bars = svg.selectAll('rect')
+        .data(dataArray);
+    
+    // Enter and update bars with improved styling
+    bars.enter()
+        .append('rect')
+        .merge(bars)
+        .attr('x', (d, i) => i * barWidth)
+        .attr('y', d => {
+            const height = (d / 255) * maxHeight;
+            return window.innerHeight - height;
+        })
+        .attr('width', barWidth - 1)
+        .attr('height', d => (d / 255) * maxHeight)
+        .attr('rx', 2) // Rounded corners
+        .attr('ry', 2)
+        .attr('fill', (d, i) => {
+            // Dynamic color based on frequency and amplitude
+            const hue = (i / dataArray.length) * 360;
+            const saturation = 80 + (d / 255) * 20;
+            const lightness = 40 + (d / 255) * 30;
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        })
+        .style('filter', 'url(#glow)') // Add glow effect
+        .style('transform-origin', 'bottom')
+        .style('transform', (d, i) => {
+            // Add subtle rotation based on amplitude
+            const rotation = (d / 255) * 2 - 1;
+            return `rotate(${rotation}deg)`;
+        });
+    
+    // Add glow filter if it doesn't exist
+    if (!svg.select('defs').node()) {
+        const defs = svg.append('defs');
+        const filter = defs.append('filter')
+            .attr('id', 'glow');
+            
+        filter.append('feGaussianBlur')
+            .attr('stdDeviation', '2')
+            .attr('result', 'coloredBlur');
+            
+        const feMerge = filter.append('feMerge');
+        feMerge.append('feMergeNode')
+            .attr('in', 'coloredBlur');
+        feMerge.append('feMergeNode')
+            .attr('in', 'SourceGraphic');
+    }
+    
+    // Optional: Add pulsing background based on bass frequencies
+    const bassAverage = dataArray.slice(0, 10).reduce((a, b) => a + b) / 10;
+    document.body.style.backgroundColor = `rgba(0, 0, 0, ${0.9 + (bassAverage / 255) * 0.1})`;
+    
+    // Remove extra bars
+    bars.exit().remove();
+}
+
+// Visualization function - deprecated :)
+function visualizeOld() {
+    animationId = requestAnimationFrame(visualize);
+    
+    analyser.getByteFrequencyData(dataArray);
+    
     // Calculate bar width based on window size and number of bars
     const barWidth = window.innerWidth / dataArray.length;
     
