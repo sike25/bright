@@ -37,7 +37,7 @@ document.querySelectorAll('.preset').forEach(button => {
     button.addEventListener('click', () => {
         const prompt = button.dataset.prompt;
         promptInput.value = prompt;
-        document.getElementById('generateButton').click();
+        // document.getElementById('generateButton').click();
     });
 });
 
@@ -45,12 +45,16 @@ document.querySelectorAll('.preset').forEach(button => {
 document.getElementById('generateButton').onclick = async function() {
     const prompt = promptInput.value.trim();
 
+    setTimeout(() => {
+        console.log("5 seconds have passed!");
+    }, 5000);
+
     if (prompt) {
 
         // demo 01
         if (prompt.includes("nostalgia" )) {
             console.log("debug: nostalgia");
-            audio.src = "./assets/summer_youth_nostalgia.mp3";
+            audio.src = "./assets/youth_nostalgia.mp3";
             initAudio();
         }
 
