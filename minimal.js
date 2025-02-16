@@ -50,21 +50,21 @@ document.getElementById('generateButton').onclick = async function() {
         // demo 01
         if (prompt.includes("nostalgia" )) {
             console.log("debug: nostalgia");
-            audio.src = "assets/summer_youth_nostalgia.mp3";
+            audio.src = "./assets/summer_youth_nostalgia.mp3";
             initAudio();
         }
 
         // demo 02
         else if (prompt.includes("afro")) {
             console.log("debug: afrobeats");
-            audio.src = "assets/afrobeats_chill.mp3";
+            audio.src = "./assets/afrobeats_chill.mp3";
             initAudio();
         } 
         
         // demo 03
         else if (prompt.includes("fast")) {
             console.log("debug: edm");
-            audio.src = "assets/edm_fast.mp3";
+            audio.src = "./assets/edm_fast.mp3";
             initAudio();
         }
 
