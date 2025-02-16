@@ -20,17 +20,17 @@ const svg = d3.select('#visualizer')
 const apiKey = "can_you_keep_a_secret";
 
 // Handle file upload
-document.getElementById('audioInput').onchange = function(e) {
+// document.getElementById('audioInput').onchange = function(e) {
     
-    console.log("debug: file uploaded...");
+//     console.log("debug: file uploaded...");
     
-    const file = e.target.files[0];
-    if (file) {
-        const url = URL.createObjectURL(file);
-        audio.src = url;
-        initAudio();
-    }
-}
+//     const file = e.target.files[0];
+//     if (file) {
+//         const url = URL.createObjectURL(file);
+//         audio.src = url;
+//         initAudio();
+//     }
+// }
 
 // Handle preset prompts
 document.querySelectorAll('.preset').forEach(button => {
@@ -49,23 +49,28 @@ document.getElementById('generateButton').onclick = async function() {
 
         // demo 01
         if (prompt.includes("nostalgia" )) {
+            console.log("debug: nostalgia");
             audio.src = "assets/summer_youth_nostalgia.mp3";
             initAudio();
         }
 
         // demo 02
         else if (prompt.includes("afro")) {
+            console.log("debug: afrobeats");
             audio.src = "assets/afrobeats_chill.mp3";
             initAudio();
         } 
         
         // demo 03
         else if (prompt.includes("fast")) {
+            console.log("debug: edm");
             audio.src = "assets/edm_fast.mp3";
             initAudio();
         }
 
         else {
+
+            console.log("debug: custom prompt");
             try {
                 const taskId = await generateSong(prompt);
                 if (taskId) {
