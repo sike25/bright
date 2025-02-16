@@ -45,17 +45,18 @@ document.querySelectorAll('.preset').forEach(button => {
     button.addEventListener('click', () => {
         const prompt = button.dataset.prompt;
         promptInput.value = prompt;
-        // document.getElementById('generateButton').click();
+        document.getElementById('generateButton').click();
     });
 });
 
 // Handle text prompt input
 document.getElementById('generateButton').onclick = async function() {
+
     const prompt = promptInput.value.trim();
 
     setTimeout(() => {
-        console.log("9 seconds have passed!");
-    }, 90000);
+        console.log("delay sim 00");
+    }, 900000);
 
     if (prompt) {
 
@@ -82,27 +83,31 @@ document.getElementById('generateButton').onclick = async function() {
 
         else {
 
+            showAPILimitToast();
             console.log("debug: custom prompt");
-            try {
-                const taskId = await generateSong(prompt);
-                if (taskId) {
+            audio.src = "./assets/backup_song.mp3";
+            initAudio();
+
+            // try {
+            //     const taskId = await generateSong(prompt);
+            //     if (taskId) {
     
-                    console.log("debug: song generation complete...");
+            //         console.log("debug: song generation complete...");
     
-                    const songUrl = await retrieveSong(taskId);
-                    if (songUrl) {
+            //         const songUrl = await retrieveSong(taskId);
+            //         if (songUrl) {
     
-                        console.log("debug: song retrieval complete...");
+            //             console.log("debug: song retrieval complete...");
     
-                        audio.src = songUrl;
-                        initAudio()
-                    }
-                }
-            } catch (error) {
-                console.error('Bright: Error generating song:', error)
-                audio.src = "backup_song.mp3";
-                initAudio();
-            }
+            //             audio.src = songUrl;
+            //             initAudio()
+            //         }
+            //     }
+            // } catch (error) {
+            //     console.error('Bright: Error generating song:', error)
+            //     audio.src = "backup_song.mp3";
+            //     initAudio();
+            // }
         }
 
     } else {
@@ -211,6 +216,12 @@ async function retrieveSong(taskId) {
 
 // Initialize audio context
 function initAudio() {
+
+    setTimeout(() => {
+        console.log("delay sim");
+    }, 900000);
+
+
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
@@ -223,7 +234,7 @@ function initAudio() {
         analyser.connect(audioContext.destination);
         
         // Set up analyser
-        analyser.fftSize = 256;
+        analyser.fftSize = 128;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
 
@@ -259,9 +270,9 @@ function visualize() {
     analyser.getByteFrequencyData(dataArray);
 
     // Random base colors
-    const baseRed = Math.floor(Math.random() * 156);
-    const baseGreen = Math.floor(Math.random() * 156);
-    const baseBlue = Math.floor(Math.random() * 156);
+    const baseRed = Math.floor(Math.random() * 256);
+    const baseGreen = Math.floor(Math.random() * 256);
+    const baseBlue = Math.floor(Math.random() * 256);
     
     // Calculate bar width based on window size and number of bars
     const centerX = window.innerWidth / 2;
@@ -271,12 +282,12 @@ function visualize() {
     let heightMultiplier = 1;
     const isBeat = detectBeats(dataArray);
     if (isBeat) {
-        heightMultiplier = 1.2;
+        heightMultiplier = 2;
     }
     
     // Update visualization
     const bars = svg.selectAll('rect')
-        .data([...dataArray, ...dataArray.reverse()]);
+        .data([...dataArray, ...dataArray.reverse()]); // Double the data for mirroring
     
     // Enter new bars
     bars.enter()
@@ -284,7 +295,7 @@ function visualize() {
         .merge(bars)
         .attr('x', (d, i) => {
             if (i < dataArray.length) {
-                return centerX - (i * barWidth) - barWidth;
+                return i * barWidth;;
             } else {
                 return centerX + ((i - dataArray.length) * barWidth);
             }})
@@ -336,15 +347,35 @@ function detectBeats(){
         return beatDetected;
 }
 
+function showAPILimitToast() {
+    // Remove any existing toasts
+    // const existingToast = document.querySelector('.toast');
+    // if (existingToast) {
+    //     document.body.removeChild(existingToast);
+    // }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = 'API credits are out! Enjoy some Sommo instead!';
+    document.body.appendChild(toast);
+    
+    // Remove the toast after animation completes
+    setTimeout(() => {
+        // if (toast.parentElement) {
+        //     document.body.removeChild(toast);
+        // }
+    }, 10000);
+}
+
 
 
 // Notify user generated video is ready
 function showToast() {
     // Remove any existing toasts
-    const existingToast = document.querySelector('.toast');
-    if (existingToast) {
-        document.body.removeChild(existingToast);
-    }
+    // const existingToast = document.querySelector('.toast');
+    // if (existingToast) {
+    //     document.body.removeChild(existingToast);
+    // }
 
     const toast = document.createElement('div');
     toast.className = 'toast';
