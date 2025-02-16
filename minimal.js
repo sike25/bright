@@ -10,13 +10,14 @@ const playPauseBtn = document.getElementById('playPause');
 const gainControl = document.getElementById('gainControl');
 const promptInput = document.getElementById('promptInput');
 
-const apiKey = "c1c47773f336f44ae378375d5da79a7c";
-
 // Set up D3
 const svg = d3.select('#visualizer')
     .append('svg')
     .attr('width', window.innerWidth)
     .attr('height', window.innerHeight);
+
+
+const apiKey = "can_you_keep_a_secret";
 
 // Handle file upload
 document.getElementById('audioInput').onchange = function(e) {
@@ -38,17 +39,23 @@ document.getElementById('generateButton').onclick = async function() {
     if (prompt) {
 
         // demo 01
-        if ("nostalgia" in prompt) {
+        if (prompt.includes("nostalgia" )) {
             audio.src = "summer_youth_nostalgia.mp3";
             initAudio();
         }
 
         // demo 02
-        else if ("" in prompt) {
-            console.log();
+        else if (prompt.includes("afro")) {
+            audio.src = "afrobeats_chill.mp3";
+            initAudio();
         } 
         
         // demo 03
+        else if (prompt.includes("fast")) {
+            audio.src = "edm_fast.mp3";
+            initAudio();
+        }
+
         else {
             try {
                 const taskId = await generateSong(prompt);
@@ -126,8 +133,6 @@ async function generateSong(prompt) {
 // Retrieve generated song
 async function retrieveSong(taskId) {
 
-    taskId = "fdd88280-6b2d-432e-8d20-12dfee976fa8";
-
     console.log("debug: building retrieval request to suno...");
 
     const maxRetries = 2; // 1 minute total (5s * 12)
@@ -195,6 +200,9 @@ function initAudio() {
         analyser.fftSize = 256;
         const bufferLength = analyser.frequencyBinCount;
         dataArray = new Uint8Array(bufferLength);
+
+        // Prompt user to play generated song
+        showToast();
         
         // Start visualization
         visualize();
@@ -244,6 +252,27 @@ function visualize() {
     
     // Remove extra bars
     bars.exit().remove();
+}
+
+// Notify user generated video is ready
+function showToast() {
+    // Remove any existing toasts
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+        document.body.removeChild(existingToast);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = 'Your song is ready. Play it!';
+    document.body.appendChild(toast);
+    
+    // Remove the toast after animation completes
+    setTimeout(() => {
+        if (toast.parentElement) {
+            document.body.removeChild(toast);
+        }
+    }, 2500);
 }
 
 // Handle window resize
